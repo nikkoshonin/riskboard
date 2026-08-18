@@ -1,0 +1,106 @@
+<h1>Nouvelle demande de derogation</h1>
+
+@if (submitSuccess) {
+  <div class="alert alert-success">
+    Demande de derogation soumise avec succes.
+  </div>
+}
+@if (submitError) {
+  <div class="alert alert-error">{{ submitError }}</div>
+}
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="derogation-form">
+
+  <div class="field">
+    <label for="counterpartyId">Contrepartie</label>
+    <select id="counterpartyId" formControlName="counterpartyId">
+      <option [ngValue]="null">-- Selectionner une contrepartie --</option>
+      @for (cp of counterparties; track cp) {
+        <option [ngValue]="cp.id">{{ cp.name }}</option>
+      }
+    </select>
+    @if (submitted && form.get('counterpartyId')?.invalid) {
+      <div class="error">
+        La contrepartie est obligatoire.
+      </div>
+    }
+  </div>
+
+  <div class="field">
+    <label>Type de risque</label>
+    <div class="radio-group">
+      @for (type of limitTypes; track type) {
+        <label>
+          <input type="radio" [value]="type" formControlName="limitType" />
+          {{ type }}
+        </label>
+      }
+    </div>
+    @if (submitted && form.get('limitType')?.invalid) {
+      <div class="error">
+        Le type de risque est obligatoire.
+      </div>
+    }
+    @if (!checkingLimit && limitMissing) {
+      <div class="error">
+        Aucune limite n'existe pour cette contrepartie et ce type de risque. La demande ne peut pas etre soumise.
+      </div>
+    }
+    @if (checkingLimit) {
+      <div class="hint">Verification de la limite...</div>
+    }
+  </div>
+
+  <div class="field">
+    <label for="amount">Montant demande</label>
+    <input id="amount" type="number" formControlName="amount" min="0.01" step="0.01" />
+    @if (form.get('amount')?.touched && form.get('amount')?.hasError('required')) {
+      <div class="error">
+        Le montant demande est obligatoire.
+      </div>
+    }
+    @if (form.get('amount')?.touched && form.get('amount')?.hasError('min')) {
+      <div class="error">
+        Le montant demande doit etre strictement superieur a 0.
+      </div>
+    }
+    @if (form.get('amount')?.hasError('maxAmountExceeded')) {
+      <div class="error">
+        Le montant depasse 150% de la limite max autorisee
+        ({{ form.get('amount')?.errors?.['maxAmountExceeded']?.maxAllowed }}).
+      </div>
+    }
+  </div>
+
+  <div class="field">
+    <label for="reason">Raison</label>
+    <textarea id="reason" formControlName="reason" rows="4"></textarea>
+    @if (submitted && form.get('reason')?.hasError('required')) {
+      <div class="error">
+        La raison est obligatoire.
+      </div>
+    }
+    @if (form.get('reason')?.touched && form.get('reason')?.hasError('minlength')) {
+      <div class="error">
+        La raison doit contenir au moins 20 caracteres.
+      </div>
+    }
+  </div>
+
+  <div class="field">
+    <label for="requestedBy">Demande par</label>
+    <input id="requestedBy" type="text" formControlName="requestedBy" />
+    @if (submitted && form.get('requestedBy')?.hasError('required')) {
+      <div class="error">
+        Ce champ est obligatoire.
+      </div>
+    }
+    @if (form.get('requestedBy')?.touched && form.get('requestedBy')?.hasError('minlength')) {
+      <div class="error">
+        Ce champ doit contenir au moins 6 caracteres.
+      </div>
+    }
+  </div>
+
+  <button type="submit" [disabled]="!canSubmit">Soumettre la demande</button>
+</form>

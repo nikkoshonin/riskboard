@@ -1,0 +1,45 @@
+<h1>Validation des demandes de derogation</h1>
+
+@if (error) {
+  <div class="alert alert-error">{{ error }}</div>
+}
+@if (loading) {
+  <p>Chargement...</p>
+}
+
+@if (!loading) {
+  <table>
+    <thead>
+      <tr>
+        <th>Contrepartie</th>
+        <th>Type</th>
+        <th>Montant</th>
+        <th>Raison</th>
+        <th>Demande par</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (req of pendingRequests; track req) {
+        <tr>
+          <td>{{ req.counterpartyName }}</td>
+          <td>{{ req.limitType }}</td>
+          <td>{{ req.amount | number:'1.0-0' }}</td>
+          <td>{{ req.reason }}</td>
+          <td>{{ req.requestedBy }}</td>
+          <td>{{ req.createdAt | date:'short' }}</td>
+          <td class="actions">
+            <button class="approve" (click)="approve(req)" [disabled]="processingId === req.id">Valider</button>
+            <button class="reject" (click)="reject(req)" [disabled]="processingId === req.id">Rejeter</button>
+          </td>
+        </tr>
+      }
+      @if (pendingRequests.length === 0) {
+        <tr>
+          <td colspan="7">Aucune demande en attente.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

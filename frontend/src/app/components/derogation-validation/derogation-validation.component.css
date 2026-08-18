@@ -1,0 +1,45 @@
+h1 {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+}
+
+table {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  color: white;
+  font-weight: 600;
+}
+
+button.approve {
+  background-color: #38a169;
+}
+
+button.reject {
+  background-color: #e53e3e;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.alert-error {
+  background-color: #fed7d7;
+  color: #822727;
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
