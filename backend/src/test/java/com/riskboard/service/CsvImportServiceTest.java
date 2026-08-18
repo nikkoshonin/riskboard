@@ -6,6 +6,7 @@ import com.riskboard.model.LimitType;
 import com.riskboard.model.RiskLimit;
 import com.riskboard.repository.CounterpartyRepository;
 import com.riskboard.repository.RiskLimitRepository;
+import com.riskboard.service.impl.CsvImportServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CsvImportServiceTest {
 
     @Autowired
-    private CsvImportService csvImportService;
+    private CsvImportServiceImpl csvImportService;
 
     @Autowired
     private CounterpartyRepository counterpartyRepository;
