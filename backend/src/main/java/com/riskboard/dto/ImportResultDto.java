@@ -16,7 +16,7 @@ public class ImportResultDto {
     private int successCount;
     private int errorCount;
     private List<ImportErrorDto> errors = new ArrayList<>();
-    
+
     public void addError(ImportErrorDto error) {
         this.errors.add(error);
         this.errorCount++;

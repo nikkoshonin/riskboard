@@ -41,7 +41,7 @@ public class CsvImportServiceImpl implements CsvImportService {
 
     private final CounterpartyRepository counterpartyRepository;
     private final RiskLimitRepository riskLimitRepository;
-    
+
     @Override
     public ImportResultDto importCsv(InputStream inputStream) {
         ImportResultDto result = new ImportResultDto();
