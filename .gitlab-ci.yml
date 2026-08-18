@@ -1,0 +1,84 @@
+# Pipeline CI construisant et testant le backend Spring Boot et le frontend
+# Angular. L'execution reelle n'est pas necessaire pour ce test technique,
+# mais le pipeline est ecrit pour etre fonctionnel sur un runner GitLab
+# standard (Docker executor).
+
+stages:
+  - build
+  - test
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end"
+
+# --- Backend ---
+
+backend:build:
+  stage: build
+  image: maven:3.9-eclipse-temurin-21
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-backend"
+    paths:
+      - .m2/repository
+  script:
+    - cd backend
+    - mvn $MAVEN_CLI_OPTS compile
+  rules:
+    - changes:
+        - backend/**/*
+
+backend:test:
+  stage: test
+  image: maven:3.9-eclipse-temurin-21
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-backend"
+    paths:
+      - .m2/repository
+  script:
+    - cd backend
+    - mvn $MAVEN_CLI_OPTS test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - backend/target/surefire-reports/*.xml
+  rules:
+    - changes:
+        - backend/**/*
+
+# --- Frontend ---
+
+frontend:build:
+  stage: build
+  image: node:24-alpine
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-frontend"
+    paths:
+      - frontend/node_modules
+  script:
+    - cd frontend
+    - npm ci
+    - npm run build
+  rules:
+    - changes:
+        - frontend/**/*
+
+frontend:test:
+  stage: test
+  image: node:24-alpine
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-frontend"
+    paths:
+      - frontend/node_modules
+  script:
+    - cd frontend
+    - npm ci
+    - npm run test -- --watch=false --browsers=ChromeHeadless
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - frontend/test-results.xml
+  rules:
+    - changes:
+        - frontend/**/*
