@@ -63,6 +63,7 @@ describe('CsvUploadComponent', () => {
       const file = new File(['test'], 'risk-limits.csv');
 
       component.result = {
+        errorCount: 0,
         successCount: 5,
         errors: []
       } as ImportResult;
@@ -110,7 +111,7 @@ describe('CsvUploadComponent', () => {
       component.selectedFile = file;
 
       riskLimitService.importCsv.and.returnValue(
-        of({ successCount: 1, errors: [] } as ImportResult)
+        of({ successCount: 1, errors: [] , errorCount: 0 } as ImportResult)
       );
 
       component.upload();
@@ -123,6 +124,7 @@ describe('CsvUploadComponent', () => {
       const file = new File(['test'], 'risk-limits.csv');
 
       const result = {
+        errorCount: 0,
         successCount: 3,
         errors: []
       } as ImportResult;
@@ -170,6 +172,7 @@ describe('CsvUploadComponent', () => {
       expect(component.uploading).toBeTrue();
 
       subject.next({
+        errorCount: 0,
         successCount: 1,
         errors: []
       } as ImportResult);
