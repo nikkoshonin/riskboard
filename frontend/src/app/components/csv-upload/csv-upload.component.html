@@ -1,0 +1,47 @@
+<h1>Import CSV des limites de risque</h1>
+
+<p>
+  Le fichier doit contenir les colonnes suivantes :
+  <code>name,ricosCode,country,sector,limitType,maxAmount,usedAmount,currency</code>
+</p>
+
+<div class="upload-box">
+  <input type="file" accept=".csv" (change)="onFileSelected($event)" />
+  <button (click)="upload()" [disabled]="!selectedFile || uploading">
+    {{ uploading ? 'Import en cours...' : 'Importer' }}
+  </button>
+</div>
+
+@if (error) {
+  <div class="alert alert-error">{{ error }}</div>
+}
+
+@if (result) {
+  <div class="result">
+    <h2>Resultat de l'import</h2>
+    <p>
+      <strong>{{ result.successCount }}</strong> ligne(s) importee(s) avec succes,
+      <strong>{{ result.errorCount }}</strong> erreur(s).
+    </p>
+    @if (result.errors.length > 0) {
+      <table>
+        <thead>
+          <tr>
+            <th>Ligne</th>
+            <th>Contenu</th>
+            <th>Erreur</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (err of result.errors; track err) {
+            <tr>
+              <td>{{ err.lineNumber }}</td>
+              <td>{{ err.rawLine }}</td>
+              <td>{{ err.message }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+}

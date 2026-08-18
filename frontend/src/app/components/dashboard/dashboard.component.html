@@ -1,0 +1,111 @@
+<h1>Dashboard des risques</h1>
+
+@if (error) {
+  <div class="alert alert-error">{{ error }}</div>
+}
+
+<div class="toolbar">
+  <input
+    type="text"
+    placeholder="Filtrer par nom de contrepartie..."
+    [(ngModel)]="nameFilter"
+    (ngModelChange)="onFilterChange()"
+    />
+
+  <label class="type-selector">
+    Type de limite :
+    <select [(ngModel)]="selectedLimitType" (ngModelChange)="onLimitTypeChange()">
+      <option value="ALL">Vue detaillee</option>
+      <option value="CREDIT">CREDIT</option>
+      <option value="MARKET">MARKET</option>
+      <option value="LIQUIDITY">LIQUIDITY</option>
+    </select>
+  </label>
+</div>
+
+@if (loading) {
+  <p>Chargement...</p>
+}
+
+<!-- Vue detaillee -->
+@if (!loading && selectedLimitType === 'ALL') {
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th (click)="onSortColumn('counterpartyName')">Nom {{ sortIndicator('counterpartyName') }}</th>
+          <th (click)="onSortColumn('limitType')">Type de limite {{ sortIndicator('limitType') }}</th>
+          <th (click)="onSortColumn('sector')">Secteur {{ sortIndicator('sector') }}</th>
+          <th (click)="onSortColumn('maxAmount')">Limite Max {{ sortIndicator('maxAmount') }}</th>
+          <th (click)="onSortColumn('usedAmount')">Utilise {{ sortIndicator('usedAmount') }}</th>
+          <th (click)="onSortColumn('usageRate')">% Usage {{ sortIndicator('usageRate') }}</th>
+          <th (click)="onSortColumn('alertLevel')">Statut {{ sortIndicator('alertLevel') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (rl of pagedRiskLimits; track rl) {
+          <tr>
+            <td>{{ rl.counterpartyName }}</td>
+            <td>{{ rl.limitType }}</td>
+            <td>{{ rl.sector }}</td>
+            <td>{{ rl.maxAmount | number:'1.0-0' }} {{ rl.currency }}</td>
+            <td>{{ rl.usedAmount | number:'1.0-0' }} {{ rl.currency }}</td>
+            <td>{{ rl.usageRate }}%</td>
+            <td>
+              <span [class]="badgeClass(rl.alertLevel)">
+                {{ rl.alertLevel }}
+                @if (rl.alertLevel === 'RED') {
+                  <span title="Alerte">&#9888;</span>
+                }
+              </span>
+            </td>
+          </tr>
+        }
+        @if (pagedRiskLimits.length === 0) {
+          <tr>
+            <td colspan="7">Aucune contrepartie ne correspond au filtre.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="pagination">
+      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Precedent</button>
+      <span>Page {{ currentPage }} / {{ totalPages }}</span>
+      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Suivant</button>
+    </div>
+  </div>
+}
+
+<!-- Vue agregee par secteur pour le type de limite selectionne -->
+@if (!loading && selectedLimitType !== 'ALL') {
+  <div>
+    @if (loadingExposure) {
+      <p>Chargement de l'exposition...</p>
+    }
+    @if (!loadingExposure) {
+      <table>
+        <thead>
+          <tr>
+            <th>Type de limite</th>
+            <th>Secteur</th>
+            <th>Total Utilise</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (exposure of sectorExposures; track exposure) {
+            <tr>
+              <td>{{ selectedLimitType }}</td>
+              <td>{{ exposure.sector }}</td>
+              <td>{{ exposure.totalUsedAmount | number:'1.0-0' }}</td>
+            </tr>
+          }
+          @if (sectorExposures.length === 0) {
+            <tr>
+              <td colspan="3">Aucune donnee pour ce type de limite.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+}

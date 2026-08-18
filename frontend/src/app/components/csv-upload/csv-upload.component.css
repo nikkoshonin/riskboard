@@ -1,0 +1,48 @@
+h1 {
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+.upload-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.upload-box button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2b6cb0;
+  color: white;
+}
+
+.upload-box button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.alert-error {
+  background-color: #fed7d7;
+  color: #822727;
+  padding: 10px 16px;
+  border-radius: 6px;
+}
+
+.result {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+code {
+  background: #edf2f7;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
