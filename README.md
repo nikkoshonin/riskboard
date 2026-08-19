@@ -115,7 +115,7 @@ npm test
 
 Le projet est ecrit avec les
 dernieres versions stables accessibles (Spring Boot 4.1.0 / Angular 22).
-J'ai utilisé claude.ai pour générer une première version que j'ai ensuite modifié pour corriger les bugs ainsi que les migrations de kit.
+J'ai utilisé claude.ai pour générer une première version du frontend que j'ai ensuite modifié pour corriger les bugs ainsi que les migrations de kit.
 
 ## Logique du pipeline `.gitlab-ci.yml`
 
